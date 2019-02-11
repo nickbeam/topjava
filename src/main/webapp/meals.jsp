@@ -10,13 +10,14 @@
 <h3><a href="index.html">Home</a></h3>
 <h2>Meals</h2>
 
-<table align="center" border="1" cellpadding="8" cellspacing="0">
+<table border="1" cellpadding="8" cellspacing="0">
     <thead>
     <tr>
-        <th width="25%">Date</th>
-        <th width="25%">Description</th>
-        <th width="25%">Calories</th>
-        <th width="25%">Excess</th>
+        <th>Date</th>
+        <th>Description</th>
+        <th>Calories</th>
+        <th>Excess</th>
+        <th colspan="2">Action</th>
     </tr>
     </thead>
     <tbody>
@@ -29,6 +30,8 @@
                     <td>${meal.description}</td>
                     <td>${meal.calories}</td>
                     <td>${meal.excess}</td>
+                    <td><a href="meals?action=edit&id=<c:out value="${meal.id}"/>">Edit</a></td>
+                    <td><a href="meals?action=delete&id=<c:out value="${meal.id}"/>">Delete</a></td>
                 </tr>
             </c:when>
             <c:otherwise>
@@ -37,12 +40,14 @@
                     <td>${meal.description}</td>
                     <td>${meal.calories}</td>
                     <td>${meal.excess}</td>
+                    <td><a href="meals?action=edit&id=<c:out value="${meal.id}"/>">Edit</a></td>
+                    <td><a href="meals?action=delete&id=<c:out value="${meal.id}"/>">Delete</a></td>
                 </tr>
             </c:otherwise>
         </c:choose>
     </c:forEach>
     </tbody>
 </table>
-
+<p><a href="meals?action=insert">Add Meal</a></p>
 </body>
 </html>

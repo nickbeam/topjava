@@ -19,9 +19,26 @@ public class MealServlet extends HttpServlet {
     }
 
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        log.debug("redirect to meals");
-        request.setAttribute("meals", meals);
+        String action = request.getParameter("action") != null ? request.getParameter("action") : "";
+        String id = request.getParameter("id");
+        switch (action) {
+            case "edit":
+                log.debug("EDIT");
+                request.setAttribute("meal", meals);
+                break;
+            case "delete":
+                log.debug("DELETE");
+                request.setAttribute("meals", meals);
+                break;
+            case "insert":
+                log.debug("INSERT");
+                request.setAttribute("meals", meals);
+                break;
+            case "":
+                log.debug("forward to meals");
+                request.setAttribute("meals", meals);
+                break;
+        }
         request.getRequestDispatcher("meals.jsp").forward(request, response);
-        //response.sendRedirect("meals.jsp");
     }
 }
