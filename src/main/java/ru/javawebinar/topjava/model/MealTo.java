@@ -17,7 +17,7 @@ public class MealTo {
 
     public MealTo(LocalDateTime dateTime, String description, int calories, boolean excess) {
         this(UUID.randomUUID().toString(), dateTime, description, calories, excess);
-    };
+    }
 
     public MealTo(String id, LocalDateTime dateTime, String description, int calories, boolean excess) {
         Objects.requireNonNull(id, "ID can't be null!");

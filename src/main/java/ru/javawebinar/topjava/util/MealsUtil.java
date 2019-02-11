@@ -16,14 +16,6 @@ import static java.util.function.Function.identity;
 import static java.util.stream.Collectors.toList;
 
 public class MealsUtil {
-    public static List<MealTo> meals = Arrays.asList(
-            new MealTo(LocalDateTime.of(2015, Month.MAY, 30, 10, 0), "Завтрак", 500, false),
-            new MealTo(LocalDateTime.of(2015, Month.MAY, 30, 13, 0), "Обед", 1000, false),
-            new MealTo(LocalDateTime.of(2015, Month.MAY, 30, 20, 0), "Ужин", 500, false),
-            new MealTo(LocalDateTime.of(2015, Month.MAY, 31, 10, 0), "Завтрак", 1000, true),
-            new MealTo(LocalDateTime.of(2015, Month.MAY, 31, 13, 0), "Обед", 500, true),
-            new MealTo(LocalDateTime.of(2015, Month.MAY, 31, 20, 0), "Ужин", 510, true)
-    );
     public static void main(String[] args) {
         List<Meal> meals = Arrays.asList(
                 new Meal(LocalDateTime.of(2015, Month.MAY, 30, 10, 0), "Завтрак", 500),

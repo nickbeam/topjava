@@ -3,6 +3,7 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <html>
 <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
     <link rel="stylesheet" href="css/style.css">
     <title>Meals</title>
 </head>
@@ -26,7 +27,7 @@
         <c:choose>
             <c:when test="${meal.excess == true}">
                 <tr align="center" class="text-red">
-                    <td>${DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss").format(meal.dateTime)}</td>
+                    <td>${DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm").format(meal.dateTime)}</td>
                     <td>${meal.description}</td>
                     <td>${meal.calories}</td>
                     <td>${meal.excess}</td>
@@ -36,7 +37,7 @@
             </c:when>
             <c:otherwise>
                 <tr align="center" class="text-green">
-                    <td>${DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss").format(meal.dateTime)}</td>
+                    <td>${DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm").format(meal.dateTime)}</td>
                     <td>${meal.description}</td>
                     <td>${meal.calories}</td>
                     <td>${meal.excess}</td>
