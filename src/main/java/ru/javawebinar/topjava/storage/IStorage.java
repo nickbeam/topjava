@@ -10,7 +10,7 @@ public interface IStorage {
 
     void update(Meal meal);
 
-    void save(Meal meal);
+    Meal save(Meal meal);
 
     void delete(String id);
 

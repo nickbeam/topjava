@@ -17,35 +17,20 @@
         <th>Date</th>
         <th>Description</th>
         <th>Calories</th>
-        <th>Excess</th>
         <th colspan="2">Action</th>
     </tr>
     </thead>
     <tbody>
+    <c:set var="dtf" value="${DateTimeFormatter.ofPattern('yyyy-MM-dd HH:mm')}"/>
     <c:forEach items="${meals}" var="meal">
         <jsp:useBean id="meal" type="ru.javawebinar.topjava.model.MealTo"/>
-        <c:choose>
-            <c:when test="${meal.excess == true}">
-                <tr align="center" class="text-red">
-                    <td>${DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm").format(meal.dateTime)}</td>
-                    <td>${meal.description}</td>
-                    <td>${meal.calories}</td>
-                    <td>${meal.excess}</td>
-                    <td><a href="meals?action=edit&id=<c:out value="${meal.id}"/>">Edit</a></td>
-                    <td><a href="meals?action=delete&id=<c:out value="${meal.id}"/>">Delete</a></td>
-                </tr>
-            </c:when>
-            <c:otherwise>
-                <tr align="center" class="text-green">
-                    <td>${DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm").format(meal.dateTime)}</td>
-                    <td>${meal.description}</td>
-                    <td>${meal.calories}</td>
-                    <td>${meal.excess}</td>
-                    <td><a href="meals?action=edit&id=<c:out value="${meal.id}"/>">Edit</a></td>
-                    <td><a href="meals?action=delete&id=<c:out value="${meal.id}"/>">Delete</a></td>
-                </tr>
-            </c:otherwise>
-        </c:choose>
+        <tr align="center" class=${meal.excess ? 'text-red' : 'text-green'}>
+            <td>${(meal.dateTime).format(dtf)}</td>
+            <td>${meal.description}</td>
+            <td>${meal.calories}</td>
+            <td><a href="meals?action=edit&id=<c:out value="${meal.id}"/>">Edit</a></td>
+            <td><a href="meals?action=delete&id=<c:out value="${meal.id}"/>">Delete</a></td>
+        </tr>
     </c:forEach>
     </tbody>
 </table>

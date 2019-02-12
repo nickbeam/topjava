@@ -3,7 +3,7 @@ package ru.javawebinar.topjava.web;
 import org.slf4j.Logger;
 import ru.javawebinar.topjava.model.Meal;
 import ru.javawebinar.topjava.storage.IStorage;
-import ru.javawebinar.topjava.storage.MapMealStorage;
+import ru.javawebinar.topjava.storage.MapStorage;
 import ru.javawebinar.topjava.util.MealsUtil;
 import ru.javawebinar.topjava.util.TimeUtil;
 
@@ -25,7 +25,7 @@ public class MealServlet extends HttpServlet {
 
     public MealServlet() {
         super();
-        storage = new MapMealStorage();
+        storage = new MapStorage();
     }
 
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
@@ -65,7 +65,7 @@ public class MealServlet extends HttpServlet {
                 break;
         }
         log.debug("forward to meals");
-        request.setAttribute("meals", MealsUtil.getFilteredWithExcess(storage.getAll(), LocalTime.of(7, 0), LocalTime.of(12, 0), 2000));
+        request.setAttribute("meals", MealsUtil.getFilteredWithExcess(storage.getAll(), LocalTime.of(0, 0), LocalTime.of(23, 59), 2000));
         request.getRequestDispatcher("meals.jsp").forward(request, response);
     }
 }
