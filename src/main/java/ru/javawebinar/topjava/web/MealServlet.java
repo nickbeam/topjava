@@ -1,9 +1,10 @@
 package ru.javawebinar.topjava.web;
 
 import org.slf4j.Logger;
-import ru.javawebinar.topjava.model.MealTo;
+import ru.javawebinar.topjava.model.Meal;
 import ru.javawebinar.topjava.storage.IStorage;
-import ru.javawebinar.topjava.storage.ListStorage;
+import ru.javawebinar.topjava.storage.MapMealStorage;
+import ru.javawebinar.topjava.util.MealsUtil;
 import ru.javawebinar.topjava.util.TimeUtil;
 
 import javax.servlet.ServletException;
@@ -12,18 +13,19 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 
 import static org.slf4j.LoggerFactory.getLogger;
-import static ru.javawebinar.topjava.storage.ListStorage.meals;
 
 public class MealServlet extends HttpServlet {
+    private static final long serialVersionUID = 1L;
     private final IStorage storage;
 
     private static final Logger log = getLogger(UserServlet.class);
 
     public MealServlet() {
         super();
-        storage = new ListStorage();
+        storage = new MapMealStorage();
     }
 
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
@@ -32,8 +34,7 @@ public class MealServlet extends HttpServlet {
         LocalDateTime dateTime = TimeUtil.parse(request.getParameter("dateTime"));
         String description = request.getParameter("description");
         int calories = Integer.parseInt(request.getParameter("calories"));
-        boolean excess = request.getParameter("excess") != null;
-        MealTo meal = new MealTo(id, dateTime, description, calories, excess);
+        Meal meal = new Meal(id, dateTime, description, calories);
         if (storage.get(id) == null) {
             storage.save(meal);
         } else {
@@ -55,22 +56,16 @@ public class MealServlet extends HttpServlet {
             case "delete":
                 log.debug("delete meal: " + id);
                 storage.delete(id);
-                request.setAttribute("meals", meals);
                 break;
             case "insert":
                 log.debug("insert meal: " + id);
-                MealTo meal = new MealTo(TimeUtil.now(), "", 0, false);
+                Meal meal = new Meal(TimeUtil.now(), "", 0);
                 request.setAttribute("meal", meal);
                 request.getRequestDispatcher("edit.jsp").forward(request, response);
                 break;
-            case "":
-                log.debug("forward to meals");
-                request.setAttribute("meals", meals);
-                break;
-            default:
-                request.setAttribute("meals", meals);
-                break;
         }
+        log.debug("forward to meals");
+        request.setAttribute("meals", MealsUtil.getFilteredWithExcess(storage.getAll(), LocalTime.of(7, 0), LocalTime.of(12, 0), 2000));
         request.getRequestDispatcher("meals.jsp").forward(request, response);
     }
 }

@@ -24,18 +24,6 @@
 
         <label for="calories">Calories:</label>
         <input type="number" step="1" id="calories" name="calories" value="${meal.calories}">
-
-        <label for="excess">Excess</label>
-        <c:choose>
-            <c:when test="${meal.excess == true}">
-                <input type="checkbox" id="excess" name="excess" value="${meal.excess}" checked>
-            </c:when>
-            <c:otherwise>
-                <input type="checkbox" id="excess" name="excess" value="${meal.excess}">
-            </c:otherwise>
-        </c:choose>
-
-
     <hr>
     <button type="submit">Save</button>
     <button onclick="window.history.back()">Cancel</button>
