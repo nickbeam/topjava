@@ -29,14 +29,14 @@ public class MapStorage implements IStorage {
     }
 
     @Override
-    public void update(Meal meal) {
+    public synchronized void update(Meal meal) {
         if (isExist(getSearchKey(meal.getId()))) {
             meals.put(meal.getId(), meal);
         }
     }
 
     @Override
-    public Meal save(Meal meal) {
+    public synchronized Meal save(Meal meal) {
         if (!isExist(getSearchKey(meal.getId()))) {
             setNewId(meal);
             meals.put(meal.getId(), meal);
@@ -46,7 +46,7 @@ public class MapStorage implements IStorage {
     }
 
     @Override
-    public void delete(String id) {
+    public synchronized void delete(String id) {
         if (isExist(getSearchKey(id))) {
             meals.remove(id);
         }
