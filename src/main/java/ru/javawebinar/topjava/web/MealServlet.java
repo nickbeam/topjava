@@ -14,6 +14,7 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.util.Objects;
 
 import static org.slf4j.LoggerFactory.getLogger;
 
@@ -30,35 +31,32 @@ public class MealServlet extends HttpServlet {
 
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         request.setCharacterEncoding("UTF-8");
-        String id = request.getParameter("id");
+        //Integer id = getId(request);
         LocalDateTime dateTime = TimeUtil.parse(request.getParameter("dateTime"));
         String description = request.getParameter("description");
         int calories = Integer.parseInt(request.getParameter("calories"));
-        Meal meal = new Meal(id, dateTime, description, calories);
-        if (storage.get(id) == null) {
-            storage.save(meal);
-        } else {
-            storage.update(meal);
-        }
+        Meal meal = new Meal(dateTime, description, calories);
+
+        storage.save(meal);
 
         response.sendRedirect("meals");
     }
 
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         String action = request.getParameter("action") != null ? request.getParameter("action") : "";
-        String id = request.getParameter("id");
+        //Integer id = getId(request);
         switch (action) {
             case "edit":
-                log.debug("edit meal: " + id);
-                request.setAttribute("meal", storage.get(id));
+                log.debug("edit meal");
+                request.setAttribute("meal", storage.get(getId(request)));
                 request.getRequestDispatcher("edit.jsp").forward(request, response);
                 break;
             case "delete":
-                log.debug("delete meal: " + id);
-                storage.delete(id);
+                log.debug("delete meal");
+                storage.delete(getId(request));
                 break;
             case "insert":
-                log.debug("insert meal: " + id);
+                log.debug("insert new meal");
                 Meal meal = new Meal(TimeUtil.now(), "", 0);
                 request.setAttribute("meal", meal);
                 request.getRequestDispatcher("edit.jsp").forward(request, response);
@@ -67,5 +65,10 @@ public class MealServlet extends HttpServlet {
         log.debug("forward to meals");
         request.setAttribute("meals", MealsUtil.getFilteredWithExcess(storage.getAll(), LocalTime.of(0, 0), LocalTime.of(23, 59), 2000));
         request.getRequestDispatcher("meals.jsp").forward(request, response);
+    }
+
+    private int getId(HttpServletRequest request) {
+        String paramId = Objects.requireNonNull(request.getParameter("id"));
+        return Integer.parseInt(paramId);
     }
 }

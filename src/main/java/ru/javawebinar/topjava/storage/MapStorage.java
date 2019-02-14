@@ -7,61 +7,45 @@ import java.time.LocalDateTime;
 import java.time.Month;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.atomic.AtomicInteger;
 
 public class MapStorage implements IStorage {
 
-    private static final Map<String, Meal> meals = new ConcurrentHashMap<String, Meal>() {{
-        put("1", new Meal("1", LocalDateTime.of(2015, Month.MAY, 30, 10, 0), "Завтрак", 500));
-        put("2", new Meal("2", LocalDateTime.of(2015, Month.MAY, 30, 13, 0), "Обед", 1000));
-        put("3", new Meal("3",LocalDateTime.of(2015, Month.MAY, 30, 20, 0), "Ужин", 500));
-        put("4", new Meal("4", LocalDateTime.of(2015, Month.MAY, 31, 10, 0), "Завтрак", 1000));
-        put("5", new Meal("5",LocalDateTime.of(2015, Month.MAY, 31, 13, 0), "Обед", 500));
-        put("6", new Meal("6", LocalDateTime.of(2015, Month.MAY, 31, 20, 0), "Ужин", 510));
-    }};
+    private AtomicInteger counter = new AtomicInteger(0);
 
-    private void setNewId(Meal meal) {
-        meal.setId(UUID.randomUUID().toString());
+    private static final Map<Integer, Meal> meals = new ConcurrentHashMap<>();
+
+    {
+        save(new Meal(LocalDateTime.of(2015, Month.MAY, 30, 10, 0), "Завтрак", 500));
+        save(new Meal(LocalDateTime.of(2015, Month.MAY, 30, 13, 0), "Обед", 1000));
+        save(new Meal(LocalDateTime.of(2015, Month.MAY, 30, 20, 0), "Ужин", 500));
+        save(new Meal(LocalDateTime.of(2015, Month.MAY, 31, 10, 0), "Завтрак", 1000));
+        save(new Meal(LocalDateTime.of(2015, Month.MAY, 31, 13, 0), "Обед", 500));
+        save(new Meal(LocalDateTime.of(2015, Month.MAY, 31, 20, 0), "Ужин", 510));
     }
 
     @Override
-    public Meal get(String id) {
+    public Meal get(Integer id) {
         return meals.get(id);
     }
 
     @Override
-    public synchronized void update(Meal meal) {
-        if (isExist(getSearchKey(meal.getId()))) {
-            meals.put(meal.getId(), meal);
-        }
-    }
-
-    @Override
-    public synchronized Meal save(Meal meal) {
-        if (!isExist(getSearchKey(meal.getId()))) {
-            setNewId(meal);
+    public Meal save(Meal meal) {
+        if (meal.isNew()) {
+            meal.setId(counter.incrementAndGet());
             meals.put(meal.getId(), meal);
             return meal;
         }
-        return null;
+        return meals.computeIfPresent(meal.getId(), (k, v) -> meal);
     }
 
     @Override
-    public synchronized void delete(String id) {
-        if (isExist(getSearchKey(id))) {
-            meals.remove(id);
-        }
-    }
-
-    private Meal getSearchKey(String id) {
-        return meals.get(id);
-    }
-
-    private boolean isExist(Meal meal) {
-        return meal != null;
+    public void delete(Integer id) {
+        meals.remove(id);
     }
 
     @Override
-    public List<Meal> getAll() {
-        return new ArrayList<>(meals.values());
+    public Collection<Meal> getAll() {
+        return meals.values();
     }
 }
