@@ -3,10 +3,9 @@ package ru.javawebinar.topjava.repository.inmemory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Repository;
-import ru.javawebinar.topjava.model.Meal;
-import ru.javawebinar.topjava.model.Role;
 import ru.javawebinar.topjava.model.User;
 import ru.javawebinar.topjava.repository.UserRepository;
+import ru.javawebinar.topjava.util.MealsUtil;
 
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
@@ -21,9 +20,7 @@ public class InMemoryUserRepositoryImpl implements UserRepository {
     private AtomicInteger counter = new AtomicInteger(0);
 
     {
-        save(new User(null, "name1", "name1@mail.com", "123", Role.ROLE_ADMIN));
-        save(new User(null, "name2", "name2@mail.com", "123", Role.ROLE_USER));
-        save(new User(null, "name3", "name3@mail.com", "123", Role.ROLE_USER));
+        MealsUtil.USERS.forEach(this::save);
     }
 
     @Override
