@@ -34,11 +34,9 @@ public class InMemoryUserRepositoryImpl implements UserRepository {
         log.info("save {}", user);
         if (user.isNew()) {
             user.setId(counter.incrementAndGet());
-            repository.put(user.getId(), user);
-            return user;
         }
-        // treat case: update, but absent in storage
-        return repository.computeIfPresent(user.getId(), (id, oldUser) -> user);
+        repository.put(user.getId(), user);
+        return user;
     }
 
     @Override
@@ -50,7 +48,7 @@ public class InMemoryUserRepositoryImpl implements UserRepository {
     @Override
     public List<User> getAll() {
         log.info("getAll");
-        return repository.values().stream().sorted().collect(Collectors.toList());
+        return repository.values().stream().sorted(Comparator.comparing(User::getName)).collect(Collectors.toList());
     }
 
     @Override

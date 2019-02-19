@@ -13,6 +13,14 @@ import static org.slf4j.LoggerFactory.getLogger;
 public class UserServlet extends HttpServlet {
     private static final Logger log = getLogger(UserServlet.class);
 
+    protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        request.setCharacterEncoding("UTF-8");
+        String userId = request.getParameter("userId");
+        SecurityUtil.setAuthUserId(Integer.valueOf(userId));
+        log.info("Set user id " + userId);
+        response.sendRedirect("meals");
+    }
+
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         log.debug("forward to users");

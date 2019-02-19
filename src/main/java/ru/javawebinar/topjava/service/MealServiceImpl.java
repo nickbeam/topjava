@@ -4,9 +4,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import ru.javawebinar.topjava.model.Meal;
 import ru.javawebinar.topjava.repository.MealRepository;
+import ru.javawebinar.topjava.to.MealTo;
+import ru.javawebinar.topjava.util.MealsUtil;
 import ru.javawebinar.topjava.util.exception.NotFoundException;
 
-import java.util.Collection;
+import java.time.LocalDate;
+import java.time.LocalTime;
+import java.util.List;
 
 import static ru.javawebinar.topjava.util.ValidationUtil.checkNotFoundWithId;
 
@@ -21,27 +25,32 @@ public class MealServiceImpl implements MealService {
     }
 
     @Override
-    public Meal create(Meal meal) {
-        return repository.save(meal);
+    public Meal create(int userId, Meal meal) {
+        return repository.save(userId, meal);
     }
 
     @Override
-    public void delete(int id) throws NotFoundException {
-        checkNotFoundWithId(repository.delete(id), id);
+    public void delete(int userId, int id) throws NotFoundException {
+        checkNotFoundWithId(repository.delete(userId, id), id);
     }
 
     @Override
-    public Meal get(int id) throws NotFoundException {
-        return checkNotFoundWithId(repository.get(id), id);
+    public Meal get(int userId, int id) throws NotFoundException {
+        return checkNotFoundWithId(repository.get(userId, id), id);
     }
 
     @Override
-    public void update(Meal meal) {
-        checkNotFoundWithId(repository.save(meal), meal.getId());
+    public void update(int userId, Meal meal) {
+        checkNotFoundWithId(repository.save(userId, meal), meal.getId());
     }
 
     @Override
-    public Collection<Meal> getAll() {
-        return repository.getAll();
+    public List<MealTo> getAll(int userId) {
+        return MealsUtil.getWithExcess(repository.getAll(userId), MealsUtil.DEFAULT_CALORIES_PER_DAY);
+    }
+
+    @Override
+    public List<MealTo> getAll(int userId, LocalDate startDate, LocalDate endDate, LocalTime startTime, LocalTime endTime) {
+        return MealsUtil.getWithExcess(repository.getAll(userId, startDate, endDate, startTime, endTime), MealsUtil.DEFAULT_CALORIES_PER_DAY);
     }
 }
