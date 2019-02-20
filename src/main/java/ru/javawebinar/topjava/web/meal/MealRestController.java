@@ -35,7 +35,7 @@ public class MealRestController {
 
     public Collection<MealTo> getAll(LocalDate startDate, LocalDate endDate, LocalTime startTime, LocalTime endTime) {
         log.info("getAll");
-        return service.getAll(getAuthUserId());
+        return service.getAll(getAuthUserId(), startDate, endDate, startTime, endTime);
     }
 
     public Meal get(int id) {
