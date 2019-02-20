@@ -5,6 +5,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 import ru.javawebinar.topjava.model.Meal;
+import ru.javawebinar.topjava.util.DateTimeUtil;
 import ru.javawebinar.topjava.web.meal.MealRestController;
 
 import javax.servlet.ServletConfig;
@@ -40,17 +41,24 @@ public class MealServlet extends HttpServlet {
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         request.setCharacterEncoding("UTF-8");
         String id = request.getParameter("id");
+        String action = request.getParameter("action");
 
-        Meal meal = new Meal(id.isEmpty() ? null : Integer.valueOf(id),
-                LocalDateTime.parse(request.getParameter("dateTime")),
-                request.getParameter("description"),
-                Integer.parseInt(request.getParameter("calories")));
-
-        log.info(meal.isNew() ? "Create {}" : "Update {}", meal);
-        if (meal.isNew()) {
-            mealRestController.create(meal);
+        if (action != null) {
+            request.setAttribute("meals", mealRestController.getAll(DateTimeUtil.parseDate(request.getParameter("startDate")), DateTimeUtil.parseDate(request.getParameter("endDate")),
+                            DateTimeUtil.parseTime(request.getParameter("startTime")), DateTimeUtil.parseTime(request.getParameter("endTime"))));
+            request.getRequestDispatcher("/meals.jsp").forward(request, response);
         } else {
-            mealRestController.update(meal, Integer.valueOf(id));
+            Meal meal = new Meal(id.isEmpty() ? null : Integer.valueOf(id),
+                    LocalDateTime.parse(request.getParameter("dateTime")),
+                    request.getParameter("description"),
+                    Integer.parseInt(request.getParameter("calories")));
+
+            log.info(meal.isNew() ? "Create {}" : "Update {}", meal);
+            if (meal.isNew()) {
+                mealRestController.create(meal);
+            } else {
+                mealRestController.update(meal, Integer.valueOf(id));
+            }
         }
         response.sendRedirect("meals");
     }

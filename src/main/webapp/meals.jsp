@@ -1,3 +1,4 @@
+
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
@@ -20,8 +21,34 @@
 <section>
     <h3><a href="index.html">Home</a></h3>
     <h2>Meals</h2>
+    <form method="post" action="meals?action=filter">
+        <dl>
+            <dt>Start Date:</dt>
+            <dd><label>
+                <input type="date" name="startDate" value="${filter.startDate}">
+            </label></dd>
+        </dl>
+        <dl>
+            <dt>End Date:</dt>
+            <dd><label>
+                <input type="date" name="endDate" value="${filter.endDate}">
+            </label></dd>
+        </dl>
+        <dl>
+            <dt>Start Time:</dt>
+            <dd><label>
+                <input type="time" name="startTime" value="${filter.startTime}">
+            </label></dd>
+        </dl>
+        <dl>
+            <dt>End Time:</dt>
+            <dd><label>
+                <input type="time" name="endTime" value="${filter.endTime}">
+            </label></dd>
+        </dl>
+        <button type="submit">Filter your food</button>
+    </form>
     <a href="meals?action=create">Add Meal</a>
-    <hr/>
     <table border="1" cellpadding="8" cellspacing="0">
         <thead>
         <tr>
