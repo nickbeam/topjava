@@ -20,6 +20,7 @@ public class InMemoryMealRepositoryImpl implements MealRepository {
 
     {
         MealsUtil.MEALS.forEach(meal -> save(1, meal));
+        MealsUtil.MEALS.forEach(meal -> save(2, meal));
     }
 
     @Override
