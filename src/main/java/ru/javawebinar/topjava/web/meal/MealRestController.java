@@ -33,9 +33,9 @@ public class MealRestController {
         return service.getAll(getAuthUserId());
     }
 
-    public List<MealTo> getAll(LocalDate startDate, LocalDate endDate, LocalTime startTime, LocalTime endTime) {
-        log.info("getAll");
-        return service.getAll(getAuthUserId(), startDate, endDate, startTime, endTime);
+    public List<MealTo> getFiltered(LocalDate startDate, LocalDate endDate, LocalTime startTime, LocalTime endTime) {
+        log.info("getFiltered");
+        return service.getFiltered(getAuthUserId(), startDate, endDate, startTime, endTime);
     }
 
     public Meal get(int id) {

@@ -25,11 +25,11 @@ public class InMemoryMealRepositoryImpl implements MealRepository {
 
     @Override
     public Meal save(int userId, Meal meal) {
+        repository.putIfAbsent(userId, new HashMap<>());
         if (meal.isNew()) {
             meal.setId(counter.incrementAndGet());
-        }
-        if (!repository.containsKey(userId)) {
-            repository.put(userId, new HashMap<>());
+        } else if (repository.get(userId).get(meal.getId()) == null){
+            return null;
         }
         repository.get(userId).put(meal.getId(), meal);
         return meal;
@@ -51,11 +51,10 @@ public class InMemoryMealRepositoryImpl implements MealRepository {
 
     @Override
     public List<Meal> getAll(int userId) {
-        return getAll(userId, null, null, null, null);
+        return getFiltered(userId, null, null, null, null);
     }
 
-    @Override
-    public List<Meal> getAll(int userId, LocalDate startDate, LocalDate endDate, LocalTime startTime, LocalTime endTime) {
+    public List<Meal> getFiltered(int userId, LocalDate startDate, LocalDate endDate, LocalTime startTime, LocalTime endTime) {
         if (!repository.containsKey(userId)) {
             return Collections.emptyList();
         }

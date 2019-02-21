@@ -44,7 +44,7 @@ public class MealServlet extends HttpServlet {
         String action = request.getParameter("action");
 
         if (action != null) {
-            request.setAttribute("meals", mealRestController.getAll(DateTimeUtil.parseDate(request.getParameter("startDate")), DateTimeUtil.parseDate(request.getParameter("endDate")),
+            request.setAttribute("meals", mealRestController.getFiltered(DateTimeUtil.parseDate(request.getParameter("startDate")), DateTimeUtil.parseDate(request.getParameter("endDate")),
                             DateTimeUtil.parseTime(request.getParameter("startTime")), DateTimeUtil.parseTime(request.getParameter("endTime"))));
             request.getRequestDispatcher("/meals.jsp").forward(request, response);
         } else {
@@ -84,7 +84,7 @@ public class MealServlet extends HttpServlet {
                 break;
             case "all":
             default:
-                log.info("getAll");
+                log.info("getFiltered");
                 request.setAttribute("meals", mealRestController.getAll());
                 request.getRequestDispatcher("/meals.jsp").forward(request, response);
                 break;
