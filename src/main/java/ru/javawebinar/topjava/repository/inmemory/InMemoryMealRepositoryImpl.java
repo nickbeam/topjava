@@ -37,7 +37,7 @@ public class InMemoryMealRepositoryImpl implements MealRepository {
 
     @Override
     public boolean delete(int userId, int id) {
-        if (!repository.containsKey(userId) || !repository.get(userId).containsKey(id)) {
+        if (repository.get(userId) == null || repository.get(userId).get(id) == null) {
             return false;
         }
         repository.get(userId).remove(id);
@@ -46,6 +46,7 @@ public class InMemoryMealRepositoryImpl implements MealRepository {
 
     @Override
     public Meal get(int userId, int id) {
+        repository.putIfAbsent(userId, new HashMap<>());
         return repository.get(userId).get(id);
     }
 
@@ -55,12 +56,12 @@ public class InMemoryMealRepositoryImpl implements MealRepository {
     }
 
     public List<Meal> getFiltered(int userId, LocalDate startDate, LocalDate endDate, LocalTime startTime, LocalTime endTime) {
-        if (!repository.containsKey(userId)) {
+        if (repository.get(userId) == null) {
             return Collections.emptyList();
         }
         return repository.get(userId).values().stream()
-                .filter(meal -> DateTimeUtil.isBetweenDate(meal.getDate(), startDate != null ? startDate : LocalDate.MIN, endDate != null ? endDate : LocalDate.MAX)
-                        && DateTimeUtil.isBetweenTime(meal.getTime(), startTime != null ? startTime : LocalTime.MIN, endTime != null ? endTime : LocalTime.MAX))
+                .filter(meal -> DateTimeUtil.isBetween(meal.getDate(), startDate, endDate)
+                        && DateTimeUtil.isBetween(meal.getTime(), startTime, endTime))
                 .sorted(Comparator.comparing(Meal::getDateTime).reversed())
                 .collect(Collectors.toList());
     }

@@ -9,6 +9,7 @@ import ru.javawebinar.topjava.service.MealService;
 import ru.javawebinar.topjava.to.MealTo;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.List;
 
@@ -26,16 +27,6 @@ public class MealRestController {
     @Autowired
     public MealRestController(MealService service) {
         this.service = service;
-    }
-
-    public List<MealTo> getAll() {
-        log.info("getAll");
-        return service.getAll(getAuthUserId());
-    }
-
-    public List<MealTo> getFiltered(LocalDate startDate, LocalDate endDate, LocalTime startTime, LocalTime endTime) {
-        log.info("getFiltered");
-        return service.getFiltered(getAuthUserId(), startDate, endDate, startTime, endTime);
     }
 
     public Meal get(int id) {
@@ -60,4 +51,14 @@ public class MealRestController {
         service.update(getAuthUserId(), meal);
     }
 
+    public List<MealTo> getAll() {
+        log.info("getAll");
+        return service.getAll(getAuthUserId());
+    }
+
+    public List<MealTo> getFiltered(LocalDate startDate, LocalDate endDate, LocalTime startTime, LocalTime endTime) {
+        log.info("getFiltered");
+        return service.getFiltered(getAuthUserId(), startDate == null ? LocalDate.MIN : startDate, endDate == null ? LocalDate.MAX : endDate,
+                startTime == null ? LocalTime.MIN : startTime, endTime == null ? LocalTime.MAX : endTime);
+    }
 }

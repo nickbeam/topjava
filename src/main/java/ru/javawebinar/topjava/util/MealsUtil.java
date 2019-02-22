@@ -1,8 +1,6 @@
 package ru.javawebinar.topjava.util;
 
 import ru.javawebinar.topjava.model.Meal;
-import ru.javawebinar.topjava.model.Role;
-import ru.javawebinar.topjava.model.User;
 import ru.javawebinar.topjava.to.MealTo;
 
 import java.time.LocalDate;
@@ -19,10 +17,6 @@ import java.util.stream.Collectors;
 import static java.util.stream.Collectors.toList;
 
 public class MealsUtil {
-    public static final List<User> USERS = Arrays.asList(
-            new User(1, "Admin", "admin@mail.com", "123", Role.ROLE_ADMIN),
-            new User(2, "User", "user@mail.com", "123", Role.ROLE_USER)
-    );
     public static final List<Meal> MEALS = Arrays.asList(
             new Meal(LocalDateTime.of(2019, Month.MAY, 20, 10, 0), "Завтрак", 500),
             new Meal(LocalDateTime.of(2019, Month.MAY, 20, 13, 0), "Обед", 1000),
@@ -39,7 +33,7 @@ public class MealsUtil {
     }
 
     public static List<MealTo> getFilteredWithExcess(Collection<Meal> meals, int caloriesPerDay, LocalTime startTime, LocalTime endTime) {
-        return getFilteredWithExcess(meals, caloriesPerDay, meal -> DateTimeUtil.isBetweenTime(meal.getTime(), startTime, endTime));
+        return getFilteredWithExcess(meals, caloriesPerDay, meal -> DateTimeUtil.isBetween(meal.getTime(), startTime, endTime));
     }
 
     private static List<MealTo> getFilteredWithExcess(Collection<Meal> meals, int caloriesPerDay, Predicate<Meal> filter) {
@@ -55,7 +49,7 @@ public class MealsUtil {
                 .collect(toList());
     }
 
-    public static MealTo createWithExcess(Meal meal, boolean excess) {
+    private static MealTo createWithExcess(Meal meal, boolean excess) {
         return new MealTo(meal.getId(), meal.getDateTime(), meal.getDescription(), meal.getCalories(), excess);
     }
 }
