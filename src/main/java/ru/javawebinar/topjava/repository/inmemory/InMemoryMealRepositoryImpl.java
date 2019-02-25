@@ -20,7 +20,7 @@ public class InMemoryMealRepositoryImpl implements MealRepository {
 
     {
         MealsUtil.MEALS.forEach(meal -> save(1, meal));
-        MealsUtil.MEALS.forEach(meal -> save(2, meal));
+        MealsUtil.MEALS2.forEach(meal -> save(2, meal));
     }
 
     @Override
@@ -52,7 +52,7 @@ public class InMemoryMealRepositoryImpl implements MealRepository {
 
     @Override
     public List<Meal> getAll(int userId) {
-        return getFiltered(userId, null, null, null, null);
+        return getFiltered(userId, LocalDate.MIN, LocalDate.MAX, LocalTime.MIN, LocalTime.MAX);
     }
 
     public List<Meal> getFiltered(int userId, LocalDate startDate, LocalDate endDate, LocalTime startTime, LocalTime endTime) {

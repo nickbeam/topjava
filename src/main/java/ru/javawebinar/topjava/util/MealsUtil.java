@@ -25,6 +25,14 @@ public class MealsUtil {
             new Meal(LocalDateTime.of(2019, Month.MAY, 21, 13, 0), "Обед", 500),
             new Meal(LocalDateTime.of(2019, Month.MAY, 21, 20, 0), "Ужин", 510)
     );
+    public static final List<Meal> MEALS2 = Arrays.asList(
+            new Meal(LocalDateTime.of(2019, Month.MAY, 20, 10, 0), "Завтрак", 500),
+            new Meal(LocalDateTime.of(2019, Month.MAY, 20, 13, 0), "Обед", 1000),
+            new Meal(LocalDateTime.of(2019, Month.MAY, 20, 20, 0), "Ужин", 500),
+            new Meal(LocalDateTime.of(2019, Month.MAY, 21, 10, 0), "Завтрак", 1000),
+            new Meal(LocalDateTime.of(2019, Month.MAY, 21, 13, 0), "Обед", 500),
+            new Meal(LocalDateTime.of(2019, Month.MAY, 21, 20, 0), "Ужин", 510)
+    );
 
     public static final int DEFAULT_CALORIES_PER_DAY = 2000;
 
