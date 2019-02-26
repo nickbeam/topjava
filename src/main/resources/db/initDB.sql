@@ -27,15 +27,25 @@ CREATE TABLE user_roles
 
 CREATE TABLE meals
 (
-  id          integer default nextval('global_seq') not null
-    constraint meals_pkey
-      primary key,
-  user_id     integer                                         not null
-    constraint meals_user_id_fkey
-      references users
-      on delete cascade,
-  date_time   timestamp                                       not null,
-  description varchar                                         not null,
-  calories    integer                                         not null
+  id          INTEGER DEFAULT nextval('global_seq') NOT NULL
+    CONSTRAINT meals_pkey
+      PRIMARY KEY,
+  user_id     INTEGER                               NOT NULL
+    CONSTRAINT meals_user_id_fkey
+      REFERENCES users
+      ON DELETE CASCADE,
+  date_time   TIMESTAMP                             NOT NULL,
+  description VARCHAR                               NOT NULL,
+  calories    INTEGER                               NOT NULL
 );
-create unique index if not exists meals_id_uindex on meals (id);
+
+CREATE UNIQUE INDEX IF NOT EXISTS meals_id_uindex ON meals (id);
+
+CREATE UNIQUE INDEX IF NOT EXISTS meals_user_id_date_time_index
+  ON meals (user_id, date_time);
+
+CREATE INDEX IF NOT EXISTS meals_date_time_index
+  ON meals (date_time);
+
+CREATE INDEX IF NOT EXISTS meals_user_id_index
+  ON meals (user_id);
