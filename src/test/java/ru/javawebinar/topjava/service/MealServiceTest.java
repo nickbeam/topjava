@@ -14,7 +14,6 @@ import ru.javawebinar.topjava.util.exception.NotFoundException;
 
 import java.time.LocalDateTime;
 import java.time.Month;
-import java.util.Collections;
 import java.util.List;
 
 import static ru.javawebinar.topjava.MealTestData.*;
@@ -40,7 +39,7 @@ public class MealServiceTest {
 
     @Test
     public void create() throws Exception {
-        Meal newMeal = new Meal(null, LocalDateTime.of(2019, Month.FEBRUARY, 20, 13, 00), "Обед2019", 950);
+        Meal newMeal = new Meal(null, LocalDateTime.of(2019, Month.FEBRUARY, 20, 13, 0), "Обед2019", 950);
         Meal created = service.create(newMeal, USER_ID);
         newMeal.setId(created.getId());
         assertMatch(service.getAll(USER_ID), newMeal, MEAL3, MEAL2, MEAL1);
@@ -95,31 +94,20 @@ public class MealServiceTest {
 
     @Test
     public void update() throws Exception {
-        Meal updated = new Meal(MEAL1.getId(), LocalDateTime.of(2015, Month.MAY, 30, 10, 0), "Завтрак", 500);;
-        updated.setCalories(1555);
-        updated.setDescription("Updated");
+        Meal updated = new Meal(MEAL1.getId(), LocalDateTime.of(2015, Month.MAY, 30, 10, 0), "Updated", 1555);
         service.update(updated, USER_ID);
         assertMatch(service.get(MEAL1.getId(), USER_ID), updated);
     }
 
     @Test(expected = NotFoundException.class)
     public void updateWrongUserFood() throws Exception {
-        Meal updated = new Meal(MEAL1.getId(), LocalDateTime.of(2015, Month.MAY, 30, 10, 0), "Завтрак", 500);;
-        updated.setCalories(1555);
-        updated.setDescription("Updated");
-        service.update(updated, USER_ID);
-        assertMatch(service.get(MEAL1.getId(), ADMIN_ID), updated);
+        Meal updated = new Meal(MEAL1.getId(), LocalDateTime.of(2015, Month.MAY, 30, 10, 0), "Updated", 1555);
+        service.update(updated, ADMIN_ID);
     }
 
     @Test
     public void getAll() throws Exception {
         List<Meal> all = service.getAll(USER_ID);
         assertMatch(all, MEAL3, MEAL2, MEAL1);
-    }
-
-    @Test
-    public void getAllWrongUser() throws Exception {
-        List<Meal> all = service.getAll(1);
-        assertMatch(all, Collections.emptyList());
     }
 }
