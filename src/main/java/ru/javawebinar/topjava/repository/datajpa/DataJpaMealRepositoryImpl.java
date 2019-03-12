@@ -14,6 +14,7 @@ public class DataJpaMealRepositoryImpl implements MealRepository {
     @Autowired
     private CrudMealRepository crudRepository;
 
+    @Autowired
     private CrudUserRepository crudUserRepository;
 
     @Override
