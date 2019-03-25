@@ -2,10 +2,8 @@ package ru.javawebinar.topjava.web;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.context.WebApplicationContext;
 import org.springframework.web.context.support.WebApplicationContextUtils;
 import org.springframework.util.StringUtils;
@@ -83,6 +81,30 @@ public class JspMealController extends HttpServlet {
     @RequestMapping(value = "/", method = RequestMethod.GET)
     public String getRoot() {
         return "index";
+    }
+
+    @RequestMapping(method = RequestMethod.GET)
+    public String getAll(Model model) {
+        model.addAttribute("meals", service.getAll(SecurityUtil.authUserId()));
+        return "meals";
+    }
+
+    @RequestMapping(value = "/create", method = RequestMethod.GET)
+    public String create(Model model) {
+        model.addAttribute("meal", new Meal(LocalDateTime.now().truncatedTo(ChronoUnit.MINUTES), "", 1000));
+        return "mealForm";
+    }
+
+    @RequestMapping(value = "{id}/update", method = RequestMethod.GET)
+    public String update(@PathVariable("id") int id, Model model) {
+        model.addAttribute("meal", service.get(id, SecurityUtil.authUserId()));
+        return "mealForm";
+    }
+
+    @RequestMapping(value = "{id}/delete", method = RequestMethod.GET)
+    public String delete(@PathVariable("id") int id, Model model) {
+        service.delete(id, SecurityUtil.authUserId());
+        return "redirect:/meals";
     }
 
 //    @Override
