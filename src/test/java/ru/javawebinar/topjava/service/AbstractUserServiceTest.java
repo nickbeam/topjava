@@ -14,6 +14,7 @@ import javax.validation.ConstraintViolationException;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
+import java.util.Objects;
 
 import static ru.javawebinar.topjava.UserTestData.*;
 
@@ -25,12 +26,12 @@ public abstract class AbstractUserServiceTest extends AbstractServiceTest {
     @Autowired
     private CacheManager cacheManager;
 
-    @Autowired
+    @Autowired(required = false)
     protected JpaUtil jpaUtil;
 
     @Before
     public void setUp() throws Exception {
-        cacheManager.getCache("users").clear();
+        Objects.requireNonNull(cacheManager.getCache("users")).clear();
         jpaUtil.clear2ndLevelHibernateCache();
     }
 
