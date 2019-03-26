@@ -10,6 +10,7 @@ import ru.javawebinar.topjava.util.exception.NotFoundException;
 import javax.validation.ConstraintViolationException;
 import java.time.LocalDate;
 import java.time.Month;
+import java.util.Arrays;
 
 import static java.time.LocalDateTime.of;
 import static org.assertj.core.internal.bytebuddy.matcher.ElementMatchers.is;
@@ -94,11 +95,6 @@ public abstract class AbstractMealServiceTest extends AbstractServiceTest {
     }
 
     public boolean isProfile(String profile) throws Exception {
-        for(String currentProfile : environment.getActiveProfiles()){
-            if (currentProfile.equals(profile)){
-                return true;
-            }
-        }
-        return false;
+        return Arrays.stream(environment.getActiveProfiles()).anyMatch(s -> s.contains(profile));
     }
 }
