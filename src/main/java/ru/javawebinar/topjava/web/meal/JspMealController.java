@@ -22,11 +22,7 @@ import static ru.javawebinar.topjava.util.DateTimeUtil.parseLocalTime;
 @RequestMapping(value = "/meals")
 public class JspMealController extends AbstractMealController {
 
-    public JspMealController(MealService service) {
-        super(service);
-    }
-
-    @RequestMapping(value = "/save", method = RequestMethod.POST)
+    @PostMapping(value = "/save")
     public String save(HttpServletRequest request) {
         Meal meal = new Meal(
                 LocalDateTime.parse(request.getParameter("dateTime")),
@@ -41,7 +37,7 @@ public class JspMealController extends AbstractMealController {
         return "redirect:/meals";
     }
 
-    @RequestMapping(method = RequestMethod.POST)
+    @PostMapping
     public String filter(HttpServletRequest request, Model model) {
         LocalDate startDate = parseLocalDate(request.getParameter("startDate"));
         LocalDate endDate = parseLocalDate(request.getParameter("endDate"));
@@ -51,31 +47,30 @@ public class JspMealController extends AbstractMealController {
         return "meals";
     }
 
-
-    @RequestMapping(value = "/", method = RequestMethod.GET)
+    @GetMapping(value = "/")
     public String getRoot() {
         return "index";
     }
 
-    @RequestMapping(method = RequestMethod.GET)
+    @GetMapping
     public String getAll(Model model) {
         model.addAttribute("meals", super.getAll());
         return "meals";
     }
 
-    @RequestMapping(value = "/create", method = RequestMethod.GET)
+    @GetMapping(value = "/create")
     public String create(Model model) {
         model.addAttribute("meal", new Meal(LocalDateTime.now().truncatedTo(ChronoUnit.MINUTES), "", 1000));
         return "mealForm";
     }
 
-    @RequestMapping(value = "{id}/update", method = RequestMethod.GET)
+    @GetMapping(value = "{id}/update")
     public String update(@PathVariable("id") int id, Model model) {
         model.addAttribute("meal", super.get(id));
         return "mealForm";
     }
 
-    @RequestMapping(value = "{id}/delete", method = RequestMethod.GET)
+    @GetMapping(value = "{id}/delete")
     public String delete(@PathVariable("id") int id, Model model) {
         super.delete(id);
         return "redirect:/meals";
