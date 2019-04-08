@@ -9,83 +9,80 @@ import ru.javawebinar.topjava.service.MealService;
 import ru.javawebinar.topjava.web.AbstractControllerTest;
 import ru.javawebinar.topjava.web.json.JsonUtil;
 
-import java.time.LocalDateTime;
-
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static ru.javawebinar.topjava.MealTestData.*;
 import static ru.javawebinar.topjava.TestUtil.readFromJson;
-import static ru.javawebinar.topjava.UserTestData.USER_ID;
+import static ru.javawebinar.topjava.TestUtil.readFromJsonMvcResult;
+import static ru.javawebinar.topjava.UserTestData.USER;
+import static ru.javawebinar.topjava.model.AbstractBaseEntity.START_SEQ;
+import static ru.javawebinar.topjava.util.MealsUtil.createWithExcess;
+import static ru.javawebinar.topjava.util.MealsUtil.getWithExcess;
 
-public class MealRestControllerTest extends AbstractControllerTest {
+class MealRestControllerTest extends AbstractControllerTest {
+
     private static final String REST_URL = MealRestController.REST_URL + '/';
 
     @Autowired
-    protected MealService mealService;
+    private MealService service;
 
     @Test
     void testGet() throws Exception {
         mockMvc.perform(get(REST_URL + MEAL1_ID))
                 .andExpect(status().isOk())
                 .andDo(print())
-                // https://jira.spring.io/browse/SPR-14472
                 .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
-                .andExpect(contentJson(MEAL1));
+                .andExpect(result -> assertMatch(readFromJsonMvcResult(result, Meal.class), MEAL1));
+    }
+
+    @Test
+    void testDelete() throws Exception {
+        mockMvc.perform(delete(REST_URL + MEAL1_ID))
+                .andExpect(status().isNoContent());
+        assertMatch(service.getAll(START_SEQ), MEAL6, MEAL5, MEAL4, MEAL3, MEAL2);
+    }
+
+    @Test
+    void testUpdate() throws Exception {
+        Meal updated = getUpdated();
+
+        mockMvc.perform(put(REST_URL + MEAL1_ID).contentType(MediaType.APPLICATION_JSON)
+                .content(JsonUtil.writeValue(updated)))
+                .andExpect(status().isNoContent());
+
+        assertMatch(service.get(MEAL1_ID, START_SEQ), updated);
+    }
+
+    @Test
+    void testCreate() throws Exception {
+        Meal created = getCreated();
+        ResultActions action = mockMvc.perform(post(REST_URL)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(JsonUtil.writeValue(created)));
+
+        Meal returned = readFromJson(action, Meal.class);
+        created.setId(returned.getId());
+
+        assertMatch(returned, created);
+        assertMatch(service.getAll(START_SEQ), created, MEAL6, MEAL5, MEAL4, MEAL3, MEAL2, MEAL1);
     }
 
     @Test
     void testGetAll() throws Exception {
         mockMvc.perform(get(REST_URL))
                 .andExpect(status().isOk())
+                .andDo(print())
                 .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
-                .andExpect(contentJson(MEALS));
+                .andExpect(contentJson(getWithExcess(MEALS, USER.getCaloriesPerDay())));
     }
 
     @Test
     void testGetBetween() throws Exception {
-        mockMvc.perform(get(REST_URL + "filter")
-                .param("startDate", "2015-05-30").param("startTime", "10:00")
-                .param("endDate", "2015-05-30").param("endTime", "11:00"))
+        mockMvc.perform(get(REST_URL + "between?startDateTime=2015-05-30T07:00&endDateTime=2015-05-31T11:00:00"))
                 .andExpect(status().isOk())
-                .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
-                .andExpect(contentJson(MEAL1));
-    }
-
-    @Test
-    void testCreate() throws Exception {
-        Meal expected = new Meal(null, LocalDateTime.of(2015, 6, 29, 13, 55), "Lunch", 555);
-        ResultActions action = mockMvc.perform(post(REST_URL)
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(JsonUtil.writeValue(expected)))
-                .andExpect(status().isCreated());
-
-        Meal returned = readFromJson(action, Meal.class);
-        expected.setId(returned.getId());
-
-        assertMatch(returned, expected);
-        assertMatch(mealService.getAll(USER_ID), expected, MEAL6, MEAL5, MEAL4, MEAL3, MEAL2, MEAL1);
-    }
-
-    @Test
-    void testUpdate() throws Exception {
-        Meal updated = new Meal(MEAL1_ID, MEAL1.getDateTime(), MEAL1.getDescription(), MEAL1.getCalories());
-        updated.setDescription("Обновленный завтрак");
-        updated.setCalories(555);
-        mockMvc.perform(put(REST_URL + MEAL1_ID)
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(JsonUtil.writeValue(updated)))
-                .andExpect(status().isNoContent());
-
-        assertMatch(mealService.get(MEAL1_ID, USER_ID), updated);
-    }
-
-    @Test
-    void testDelete() throws Exception {
-        mockMvc.perform(delete(REST_URL + MEAL1_ID))
                 .andDo(print())
-                .andExpect(status().isNoContent());
-        assertMatch(mealService.getAll(USER_ID), MEAL6, MEAL5, MEAL4, MEAL3, MEAL2);
+                .andExpect(contentJson(createWithExcess(MEAL4, true), createWithExcess(MEAL1, false)));
     }
 }
