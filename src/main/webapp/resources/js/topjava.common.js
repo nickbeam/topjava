@@ -18,6 +18,7 @@ function add() {
 }
 
 function updateRow(id) {
+    debugger;
     $("#modalTitle").html(i18n["editTitle"]);
     $.get(context.ajaxUrl + id, function (data) {
         $.each(data, function (key, value) {

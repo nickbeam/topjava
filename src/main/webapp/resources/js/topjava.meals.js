@@ -27,9 +27,8 @@ $(function () {
                 {
                     "data": "dateTime",
                     "render": function (date, type) {
-                        debugger;
                         if (type === 'display') {
-                            return '<span>' + moment(date).format('YYYY-MM-DD HH:mm') + '</span>';
+                            return moment(date).format('YYYY-MM-DD HH:mm');
                         }
                         return date;
                     }
@@ -56,7 +55,12 @@ $(function () {
                     0,
                     "desc"
                 ]
-            ]
+            ],
+            "createdRow": function (row, data, dataIndex) {
+                // debugger;
+                data.excess ? $(row).addClass("exceeded") : $(row).addClass("normal");
+            },
+            "initComplete": makeEditable
         }),
         updateTable: updateFilteredTable
     });

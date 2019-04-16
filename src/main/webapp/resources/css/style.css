@@ -1,3 +1,11 @@
+.normal {
+    color: green;
+}
+
+.exceeded {
+    color: red;
+}
+
 tr[data-mealExcess="false"] {
     color: green;
 }
