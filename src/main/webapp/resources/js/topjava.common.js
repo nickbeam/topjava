@@ -41,7 +41,8 @@ function deleteRow(id) {
 }
 
 function updateTableByData(data) {
-    $("#datatable").DataTable().ajax.reload();
+    debugger;
+    $("#datatable").DataTable().clear().rows.add(data).draw();
 }
 
 function save() {
