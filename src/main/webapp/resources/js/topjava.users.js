@@ -1,5 +1,10 @@
 const userAjaxUrl = "ajax/admin/users/";
 
+
+function updateTable() {
+    $.get(userAjaxUrl, updateTableByData);
+}
+
 function enable(chkbox, id) {
     const enabled = chkbox.is(":checked");
 //  https://stackoverflow.com/a/22213543/548473
@@ -81,11 +86,13 @@ $(function () {
                     if (!data.enabled) {
                         $(row).attr("data-userEnabled", false);
                     }
-                }
-            }),
-            updateTable: function () {
-                $.get(userAjaxUrl, updateTableByData);
-            }
+                },
+                "initComplete": makeEditable
+            })
+            // updateTable: function () {
+            //     debugger;
+            //     $.get(userAjaxUrl, updateTableByData);
+            // }
         }
     );
 });

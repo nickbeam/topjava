@@ -1,6 +1,6 @@
 const mealAjaxUrl = "ajax/profile/meals/";
 
-function updateFilteredTable() {
+function updateTable() {
     $.ajax({
         type: "GET",
         url: mealAjaxUrl + "filter",
@@ -57,11 +57,9 @@ $(function () {
                 ]
             ],
             "createdRow": function (row, data, dataIndex) {
-                // debugger;
                 data.excess ? $(row).addClass("exceeded") : $(row).addClass("normal");
             },
             "initComplete": makeEditable
-        }),
-        updateTable: updateFilteredTable
+        })
     });
 });

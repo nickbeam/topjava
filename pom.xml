@@ -274,7 +274,7 @@
                     <artifactId>php-date-formatter</artifactId>
                 </exclusion>
                 <exclusion>
-                    <groupId>org.webjars</groupId>
+                    <groupId>org.webjars.bower</groupId>
                     <artifactId>momentjs</artifactId>
                 </exclusion>
             </exclusions>
@@ -285,7 +285,7 @@
             <version>${webjars-noty.version}</version>
         </dependency>
         <dependency>
-            <groupId>org.webjars</groupId>
+            <groupId>org.webjars.bower</groupId>
             <artifactId>momentjs</artifactId>
             <version>${webjars-moments.version}</version>
         </dependency>

@@ -1,4 +1,4 @@
-let context, form;
+var context, form;
 
 function makeEditable(ctx) {
     context = ctx;
@@ -20,7 +20,7 @@ function add() {
 function updateRow(id) {
     debugger;
     $("#modalTitle").html(i18n["editTitle"]);
-    $.get(context.ajaxUrl + id, function (data) {
+    $.get(context.ajax.url + id, function (data) {
         $.each(data, function (key, value) {
             form.find("input[name='" + key + "']").val(value);
         });
@@ -31,27 +31,27 @@ function updateRow(id) {
 function deleteRow(id) {
     if (confirm(i18n['common.confirm'])) {
         $.ajax({
-            url: context.ajaxUrl + id,
+            url: context.ajax.url + id,
             type: "DELETE"
         }).done(function () {
-            context.updateTable();
+            updateTable();
             successNoty("common.deleted");
         });
     }
 }
 
 function updateTableByData(data) {
-    context.datatableApi.clear().rows.add(data).draw();
+    $("#datatable").DataTable().ajax.reload();
 }
 
 function save() {
     $.ajax({
         type: "POST",
-        url: context.ajaxUrl,
+        url: context.ajax.url,
         data: form.serialize()
     }).done(function () {
         $("#editRow").modal("hide");
-        context.updateTable();
+        updateTable();
         successNoty("common.saved");
     });
 }
