@@ -1,6 +1,6 @@
 const mealAjaxUrl = "ajax/profile/meals/";
 
-function updateTable() {
+function updateFilteredTable() {
     $.ajax({
         type: "GET",
         url: mealAjaxUrl + "filter",
@@ -16,19 +16,13 @@ function clearFilter() {
 $(function () {
     makeEditable({
         ajaxUrl: mealAjaxUrl,
-        datatableApi: $("#datatable").DataTable({
-            "ajax": {
-                "url": mealAjaxUrl,
-                "dataSrc": ""
-            },
-            "paging": false,
-            "info": true,
+        datatableOpts: {
             "columns": [
                 {
                     "data": "dateTime",
-                    "render": function (date, type) {
+                    "render": function (date, type, row) {
                         if (type === 'display') {
-                            return moment(date).format('YYYY-MM-DD HH:mm');
+                            return formatDate(date);
                         }
                         return date;
                     }
@@ -40,14 +34,14 @@ $(function () {
                     "data": "calories"
                 },
                 {
-                    "orderable": false,
+                    "render": renderEditBtn,
                     "defaultContent": "",
-                    "render": renderEditBtn
+                    "orderable": false
                 },
                 {
-                    "orderable": false,
+                    "render": renderDeleteBtn,
                     "defaultContent": "",
-                    "render": renderDeleteBtn
+                    "orderable": false
                 }
             ],
             "order": [
@@ -57,9 +51,58 @@ $(function () {
                 ]
             ],
             "createdRow": function (row, data, dataIndex) {
-                data.excess ? $(row).addClass("exceeded") : $(row).addClass("normal");
+                $(row).attr("data-mealExcess", data.excess);
             },
-            "initComplete": makeEditable
-        })
+        },
+        updateTable: updateFilteredTable
+    });
+
+//  http://xdsoft.net/jqplugins/datetimepicker/
+    const startDate = $('#startDate');
+    const endDate = $('#endDate');
+    startDate.datetimepicker({
+        timepicker: false,
+        format: 'Y-m-d',
+        formatDate: 'Y-m-d',
+        onShow: function (ct) {
+            this.setOptions({
+                maxDate: endDate.val() ? endDate.val() : false
+            })
+        }
+    });
+    endDate.datetimepicker({
+        timepicker: false,
+        format: 'Y-m-d',
+        formatDate: 'Y-m-d',
+        onShow: function (ct) {
+            this.setOptions({
+                minDate: startDate.val() ? startDate.val() : false
+            })
+        }
+    });
+
+    const startTime = $('#startTime');
+    const endTime = $('#endTime');
+    startTime.datetimepicker({
+        datepicker: false,
+        format: 'H:i',
+        onShow: function (ct) {
+            this.setOptions({
+                maxTime: endTime.val() ? endTime.val() : false
+            })
+        }
+    });
+    endTime.datetimepicker({
+        datepicker: false,
+        format: 'H:i',
+        onShow: function (ct) {
+            this.setOptions({
+                minTime: startTime.val() ? startTime.val() : false
+            })
+        }
+    });
+
+    $('#dateTime').datetimepicker({
+        format: 'Y-m-d H:i'
     });
 });

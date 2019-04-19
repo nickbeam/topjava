@@ -1,10 +1,5 @@
 const userAjaxUrl = "ajax/admin/users/";
 
-
-function updateTable() {
-    $.get(userAjaxUrl, updateTableByData);
-}
-
 function enable(chkbox, id) {
     const enabled = chkbox.is(":checked");
 //  https://stackoverflow.com/a/22213543/548473
@@ -24,13 +19,7 @@ function enable(chkbox, id) {
 $(function () {
     makeEditable({
             ajaxUrl: userAjaxUrl,
-            datatableApi: $("#datatable").DataTable({
-                "ajax": {
-                    "url": userAjaxUrl,
-                    "dataSrc": ""
-                },
-                "paging": false,
-                "info": true,
+            datatableOpts: {
                 "columns": [
                     {
                         "data": "name"
@@ -86,13 +75,11 @@ $(function () {
                     if (!data.enabled) {
                         $(row).attr("data-userEnabled", false);
                     }
-                },
-                "initComplete": makeEditable
-            })
-            // updateTable: function () {
-            //     debugger;
-            //     $.get(userAjaxUrl, updateTableByData);
-            // }
+                }
+            },
+            updateTable: function () {
+                $.get(userAjaxUrl, updateTableByData);
+            }
         }
     );
 });
