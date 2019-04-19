@@ -1,4 +1,4 @@
-var context, form;
+let context, form;
 
 function makeEditable(ctx) {
     context = ctx;
@@ -31,9 +31,8 @@ function add() {
 }
 
 function updateRow(id) {
-    debugger;
     $("#modalTitle").html(i18n["editTitle"]);
-    $.get(context.ajax.url + id, function (data) {
+    $.get(context.ajaxUrl + id, function (data) {
         $.each(data, function (key, value) {
             form.find("input[name='" + key + "']").val(
                 key === "dateTime" ? formatDate(value) : value
@@ -50,28 +49,27 @@ function formatDate(date) {
 function deleteRow(id) {
     if (confirm(i18n['common.confirm'])) {
         $.ajax({
-            url: context.ajax.url + id,
+            url: context.ajaxUrl + id,
             type: "DELETE"
         }).done(function () {
-            updateTable();
+            context.updateTable();
             successNoty("common.deleted");
         });
     }
 }
 
 function updateTableByData(data) {
-    debugger;
-    $("#datatable").DataTable().clear().rows.add(data).draw();
+    context.datatableApi.clear().rows.add(data).draw();
 }
 
 function save() {
     $.ajax({
         type: "POST",
-        url: context.ajax.url,
+        url: context.ajaxUrl,
         data: form.serialize()
     }).done(function () {
         $("#editRow").modal("hide");
-        updateTable();
+        context.updateTable();
         successNoty("common.saved");
     });
 }
