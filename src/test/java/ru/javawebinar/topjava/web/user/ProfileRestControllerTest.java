@@ -78,17 +78,6 @@ class ProfileRestControllerTest extends AbstractControllerTest {
     }
 
     @Test
-    void testUpdateInvalidData() throws Exception {
-        UserTo updatedTo = new UserTo(null, "", null, "newPass", 555);
-
-        mockMvc.perform(put(REST_URL).contentType(MediaType.APPLICATION_JSON)
-                .with(userHttpBasic(USER))
-                .content(JsonUtil.writeValue(updatedTo)))
-                .andDo(print())
-                .andExpect(status().isUnprocessableEntity());
-    }
-
-    @Test
     void testUpdateInvalid() throws Exception {
         UserTo updatedTo = new UserTo(null, null, "password", null, 1500);
 
@@ -109,7 +98,7 @@ class ProfileRestControllerTest extends AbstractControllerTest {
         mockMvc.perform(put(REST_URL).contentType(MediaType.APPLICATION_JSON)
                 .with(userHttpBasic(USER))
                 .content(JsonUtil.writeValue(updatedTo)))
-                .andExpect(status().isConflict())
+                .andExpect(status().isUnprocessableEntity())
                 .andExpect(errorType(VALIDATION_ERROR))
                 .andExpect(detailMessage(EXCEPTION_DUPLICATE_EMAIL))
                 .andDo(print());
